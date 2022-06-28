@@ -1,5 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString, Min } from 'class-validator';
-import { CreateLocationDto } from 'src/location/dto/create-location.dto';
+import { IsNumber, IsString, Min } from 'class-validator';
 
 export class CreateItemDto {
   @IsString()
@@ -16,7 +15,4 @@ export class CreateItemDto {
   @IsNumber()
   @Min(0)
   price: number;
-
-  @IsNotEmpty({ message: 'Item Location Required' })
-  location: Array<CreateLocationDto>;
 }
