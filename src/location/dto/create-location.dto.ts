@@ -4,9 +4,9 @@ export class CreateLocationDto {
   @IsString()
   locationName: string;
 
-  @IsLongitude({ message: 'Not a valid latitude' })
+  @IsLongitude()
   longitude: number;
 
-  @IsLatitude({ message: 'Not a valid longitude' })
+  @IsLatitude()
   latitude: number;
 }

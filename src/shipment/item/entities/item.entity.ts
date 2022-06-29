@@ -1,7 +1,9 @@
+import { Location } from 'src/location/entities/location.entity';
 import {
   Column,
   Entity,
   JoinTable,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -38,4 +40,12 @@ export class Item {
   })
   @JoinTable()
   shipmentId: string;
+
+  @ManyToMany(() => Location, { cascade: true })
+  @JoinTable({
+    name: 'item_with_location',
+    joinColumn: { name: 'item', referencedColumnName: 'itemId' },
+    inverseJoinColumn: { name: 'location', referencedColumnName: 'locationId' },
+  })
+  locations: Location[];
 }

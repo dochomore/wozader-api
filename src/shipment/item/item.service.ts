@@ -1,7 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateLocationDto } from 'src/location/dto/create-location.dto';
+import { LocationService } from 'src/location/location.service';
 import { Repository } from 'typeorm';
+import { Location } from '../entities/location.entity';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
 import { ItemWithLocation } from './entities/item-with-location.entity';
@@ -11,8 +13,6 @@ import { Item } from './entities/item.entity';
 export class ItemService {
   constructor(
     @InjectRepository(Item) private readonly itemRepository: Repository<Item>,
-    @InjectRepository(ItemWithLocation)
-    private readonly itemWithLocationRepository: Repository<ItemWithLocation>,
   ) {}
 
   async create(shipmentId: string, createItemDto: CreateItemDto) {
@@ -23,16 +23,11 @@ export class ItemService {
       pricePerQt: pricePerQt,
       amountInQt: amountInQt,
       shipmentId: shipmentId,
+      locations: location,
     });
 
     try {
-      const savedItem = await this.itemRepository.save(item);
-      if (savedItem) {
-        /**
-         * save each location to location table
-         * then add location.id with item.id inside LocationWithItemEntity
-         */
-      }
+      return await this.itemRepository.save(item);
     } catch (err) {
       throw new BadRequestException();
     }

@@ -2,7 +2,6 @@ import { Type } from 'class-transformer';
 import {
   IsArray,
   IsDefined,
-  IsNotEmpty,
   IsNumber,
   IsString,
   Min,
