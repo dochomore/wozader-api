@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { ItemService } from './item.service';
 import { CreateItemDto } from './dto/create-item.dto';
@@ -18,29 +19,34 @@ export class ItemController {
 
   @Post()
   create(
-    @Param('shipmentId') shipmentId: string,
+    @Param('shipmentId', new ParseUUIDPipe()) shipmentId: string,
     @Body() createItemDto: CreateItemDto,
   ) {
     return this.itemService.create(shipmentId, createItemDto);
   }
 
   @Get()
-  findAll(@Param('shipmentId') shipmentId: string): Promise<Item[]> {
+  findAll(
+    @Param('shipmentId', new ParseUUIDPipe()) shipmentId: string,
+  ): Promise<Item[]> {
     return this.itemService.findAll(shipmentId);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.itemService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateItemDto: UpdateItemDto) {
+  update(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() updateItemDto: UpdateItemDto,
+  ) {
     return this.itemService.update(id, updateItemDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.itemService.remove(id);
   }
 }
