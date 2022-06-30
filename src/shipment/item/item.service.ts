@@ -10,8 +10,6 @@ import { Item } from './entities/item.entity';
 export class ItemService {
   constructor(
     @InjectRepository(Item) private readonly itemRepository: Repository<Item>,
-    @InjectRepository(Location)
-    private readonly locationRepository: Repository<Location>,
   ) {}
   async findAllLocations(
     shipmentId: string,
