@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Location } from '../entities/location.entity';
@@ -11,16 +15,25 @@ export class ItemService {
   constructor(
     @InjectRepository(Item) private readonly itemRepository: Repository<Item>,
   ) {}
+
+  async getLocation(shipmentId: string, itemId: string, locationId: string) {
+    throw new BadRequestException();
+  }
+
   async findAllLocations(
     shipmentId: string,
     itemId: string,
   ): Promise<Location[]> {
-    return await this.itemRepository
-      .createQueryBuilder('item')
-      .innerJoinAndSelect('item.locations', 'location')
-      .select(['location'])
-      .where('item.itemId =:id', { id: itemId })
-      .getRawMany();
+    try {
+      return await this.itemRepository
+        .createQueryBuilder('item')
+        .innerJoinAndSelect('item.locations', 'location')
+        .select(['location'])
+        .where('item.itemId =:id', { id: itemId })
+        .getRawMany();
+    } catch (error) {
+      //return new BadRequestException();
+    }
   }
 
   async create(shipmentId: string, createItemDto: CreateItemDto) {
