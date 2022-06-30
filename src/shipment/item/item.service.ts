@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Location } from '../entities/location.entity';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
 import { Item } from './entities/item.entity';
@@ -9,7 +10,20 @@ import { Item } from './entities/item.entity';
 export class ItemService {
   constructor(
     @InjectRepository(Item) private readonly itemRepository: Repository<Item>,
+    @InjectRepository(Location)
+    private readonly locationRepository: Repository<Location>,
   ) {}
+  async findAllLocations(
+    shipmentId: string,
+    itemId: string,
+  ): Promise<Location[]> {
+    return await this.itemRepository
+      .createQueryBuilder('item')
+      .innerJoinAndSelect('item.locations', 'location')
+      .select(['location'])
+      .where('item.itemId =:id', { id: itemId })
+      .getRawMany();
+  }
 
   async create(shipmentId: string, createItemDto: CreateItemDto) {
     const { name, price, pricePerQt, amountInQt, location } = createItemDto;

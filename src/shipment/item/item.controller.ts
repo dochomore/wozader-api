@@ -32,6 +32,14 @@ export class ItemController {
     return this.itemService.findAll(shipmentId);
   }
 
+  @Get('/:itemId/locations')
+  findAllLocations(
+    @Param('shipmentId', new ParseUUIDPipe()) shipmentId: string,
+    @Param('itemId', new ParseUUIDPipe()) itemId: string,
+  ) {
+    return this.itemService.findAllLocations(shipmentId, itemId);
+  }
+
   @Get(':id')
   findOne(@Param('id', new ParseUUIDPipe()) id: string) {
     return this.itemService.findOne(id);
