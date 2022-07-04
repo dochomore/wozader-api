@@ -1,7 +1,7 @@
 import {
   BadRequestException,
   Injectable,
-  InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -17,27 +17,52 @@ export class ItemService {
   ) {}
 
   async getLocation(shipmentId: string, itemId: string, locationId: string) {
-    throw new BadRequestException();
+    try {
+      const result = await this.itemRepository
+        .createQueryBuilder('item')
+        .innerJoinAndSelect('item.locations', 'location')
+        .select(['location'])
+        .where('item.itemId = :id', { id: itemId })
+        .andWhere('location.locationId = :locationId', {
+          locationId: locationId,
+        })
+        .getOne();
+      if (!result) {
+        throw new NotFoundException();
+      }
+    } catch (error) {
+      return new NotFoundException();
+    }
   }
 
   async findAllLocations(
     shipmentId: string,
     itemId: string,
-  ): Promise<Location[]> {
+  ): Promise<Location[] | BadRequestException> {
     try {
-      return await this.itemRepository
+      const result = await this.itemRepository
         .createQueryBuilder('item')
         .innerJoinAndSelect('item.locations', 'location')
         .select(['location'])
         .where('item.itemId =:id', { id: itemId })
         .getRawMany();
+      if (!result) {
+        throw new NotFoundException();
+      }
+      return result;
     } catch (error) {
-      //return new BadRequestException();
+      return new NotFoundException();
     }
   }
 
   async create(shipmentId: string, createItemDto: CreateItemDto) {
-    const { name, price, pricePerQt, amountInQt, location } = createItemDto;
+    const {
+      name,
+      price,
+      pricePerQt,
+      amountInQt,
+      locations: location,
+    } = createItemDto;
     const item: Item = this.itemRepository.create({
       name: name,
       price: price,
@@ -67,9 +92,15 @@ export class ItemService {
 
   async findOne(id: string): Promise<Item> {
     try {
-      return await this.itemRepository.findOne({ where: { itemId: id } });
+      const result = await this.itemRepository.findOne({
+        where: { itemId: id },
+      });
+      if (!result) {
+        throw new NotFoundException();
+      }
+      return result;
     } catch (err) {
-      throw new BadRequestException();
+      throw new NotFoundException();
     }
   }
 
