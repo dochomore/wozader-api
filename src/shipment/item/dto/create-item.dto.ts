@@ -29,5 +29,11 @@ export class CreateItemDto {
   @IsArray({ message: 'Location should be array of locations' })
   @ValidateNested({ each: true })
   @Type(() => CreateLocationDto)
-  locations: CreateLocationDto[];
+  startLocations: CreateLocationDto[];
+
+  @IsDefined()
+  @IsArray({ message: 'Location should be array of locations' })
+  @ValidateNested({ each: true })
+  @Type(() => CreateLocationDto)
+  endLocations: CreateLocationDto[];
 }

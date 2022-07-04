@@ -61,7 +61,7 @@ export class ItemService {
       price,
       pricePerQt,
       amountInQt,
-      locations: location,
+      startLocations: location,
     } = createItemDto;
     const item: Item = this.itemRepository.create({
       name: name,
@@ -69,7 +69,7 @@ export class ItemService {
       pricePerQt: pricePerQt,
       amountInQt: amountInQt,
       shipmentId: shipmentId,
-      locations: location,
+      startLocations: location,
     });
 
     try {

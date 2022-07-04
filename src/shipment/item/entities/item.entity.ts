@@ -47,5 +47,13 @@ export class Item {
     joinColumn: { name: 'item', referencedColumnName: 'itemId' },
     inverseJoinColumn: { name: 'location', referencedColumnName: 'locationId' },
   })
-  locations: Location[];
+  startLocations: Location[];
+
+  @ManyToMany(() => Location, { cascade: true })
+  @JoinTable({
+    name: 'item_with_location',
+    joinColumn: { name: 'item', referencedColumnName: 'itemId' },
+    inverseJoinColumn: { name: 'location', referencedColumnName: 'locationId' },
+  })
+  endLocations: Location[];
 }
