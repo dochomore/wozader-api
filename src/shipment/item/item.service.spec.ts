@@ -7,6 +7,7 @@ import { Item } from './entities/item.entity';
 import { ItemService } from './item.service';
 
 type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
+
 const createMockRepository = <T = any>(): MockRepository<T> => ({
   findOne: jest.fn(),
   create: jest.fn(),
@@ -45,7 +46,7 @@ describe('ItemService', () => {
 
         coffeeRepository.findOne.mockReturnValue(expectedItem);
         const item = await service.findOne(itemId);
-        console.log(item);
+        console.log(expectedItem);
         expect(item).toEqual(expectedItem);
       });
     });

@@ -6,7 +6,7 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
-import { CreateLocationDto } from 'src/location/dto/create-location.dto';
+import { CreateLocationDto } from '../../../location/dto/create-location.dto';
 import { Type } from 'class-transformer';
 
 export class CreateItemDto {
