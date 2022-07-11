@@ -1,7 +1,8 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { DeleteResult } from 'typeorm';
+import { DeleteResult, UpdateResult } from 'typeorm';
+import { UpdateItemDto } from './dto/update-item.dto';
 import { Item } from './entities/item.entity';
 import { ItemController } from './item.controller';
 import { ItemService } from './item.service';
@@ -102,5 +103,10 @@ describe('ItemController', () => {
       expect(controller.remove('id')).rejects.toThrow(BadRequestException);
       expect(spy).toHaveBeenCalledWith('id');
     });
+  });
+
+  describe('update', () => {
+    it('sould have update the item with valid id', () => {});
+    it("sould have 'NotFoundException' for invalid id", () => {});
   });
 });
