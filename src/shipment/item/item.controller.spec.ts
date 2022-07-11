@@ -1,7 +1,8 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { DeleteResult } from 'typeorm';
+import { DeleteResult, UpdateResult } from 'typeorm';
+import { updateRestTypeNode } from 'typescript';
 import { Item } from './entities/item.entity';
 import { ItemController } from './item.controller';
 import { ItemService } from './item.service';
@@ -105,7 +106,16 @@ describe('ItemController', () => {
   });
 
   describe('update', () => {
-    it('sould have update the item with valid id', () => {});
+    it('sould have update the item with valid id', () => {
+      const newValue = {};
+      const updatedResult = { affected: 1 } as UpdateResult;
+      const spy = jest
+        .spyOn(service, 'update')
+        .mockResolvedValue(updatedResult);
+
+      expect(controller.update('id', newValue)).resolves.toBe(updatedResult);
+      expect(spy).toBeCalledWith('id', newValue);
+    });
     it("sould have 'NotFoundException' for invalid id", () => {
       const newValue = {};
       const spy = jest
@@ -116,6 +126,7 @@ describe('ItemController', () => {
         NotFoundException,
       );
       expect(spy).toBeCalledWith('id', newValue);
+      expect(spy).toBeCalledTimes(1);
     });
   });
 });
