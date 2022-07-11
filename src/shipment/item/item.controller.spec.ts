@@ -47,4 +47,26 @@ describe('ItemController', () => {
       expect(spy).toHaveBeenCalledTimes(1);
     });
   });
+
+  describe('findOne', () => {
+    it('should return a single Item', () => {
+      const item: Item = {
+        itemId: '',
+        createdAt: undefined,
+        updatedAt: '',
+        name: '',
+        amountInQt: 0,
+        pricePerQt: 0,
+        price: 0,
+        shipmentId: '',
+        startLocations: [],
+        endLocations: [],
+      };
+      const spy = jest.spyOn(service, 'findOne').mockResolvedValue(item);
+
+      expect(controller.findOne('id')).resolves.toBe(item);
+      expect(spy).toHaveBeenCalledWith('id');
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+  });
 });
