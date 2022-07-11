@@ -1,8 +1,7 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { DeleteResult, UpdateResult } from 'typeorm';
-import { UpdateItemDto } from './dto/update-item.dto';
+import { DeleteResult } from 'typeorm';
 import { Item } from './entities/item.entity';
 import { ItemController } from './item.controller';
 import { ItemService } from './item.service';
