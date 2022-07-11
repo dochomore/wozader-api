@@ -1,6 +1,6 @@
+import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { async } from 'rxjs';
 import { Item } from './entities/item.entity';
 import { ItemController } from './item.controller';
 import { ItemService } from './item.service';
@@ -34,6 +34,17 @@ describe('ItemController', () => {
 
       expect(await controller.findAll(id)).toBe(result);
       expect(spy).toBeCalledWith(id);
+    });
+
+    it("should throw 'BadRequestException' if invalid id is provided", async () => {
+      const spy = jest
+        .spyOn(service, 'findAll')
+        .mockRejectedValue(new BadRequestException());
+
+      const id = 'id';
+
+      expect(controller.findAll(id)).rejects.toThrow(BadRequestException);
+      expect(spy).toHaveBeenCalledTimes(1);
     });
   });
 });
