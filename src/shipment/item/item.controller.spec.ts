@@ -1,4 +1,4 @@
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Item } from './entities/item.entity';
@@ -67,6 +67,16 @@ describe('ItemController', () => {
       expect(controller.findOne('id')).resolves.toBe(item);
       expect(spy).toHaveBeenCalledWith('id');
       expect(spy).toHaveBeenCalledTimes(1);
+    });
+
+    it("should throw 'NotFoundException' for invalid id", () => {
+      const spy = jest
+        .spyOn(service, 'findOne')
+        .mockRejectedValue(new NotFoundException());
+
+      expect(controller.findOne('1')).rejects.toThrow(NotFoundException);
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith('1');
     });
   });
 });
