@@ -1,6 +1,7 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { DeleteResult } from 'typeorm';
 import { Item } from './entities/item.entity';
 import { ItemController } from './item.controller';
 import { ItemService } from './item.service';
@@ -77,6 +78,20 @@ describe('ItemController', () => {
       expect(controller.findOne('1')).rejects.toThrow(NotFoundException);
       expect(spy).toHaveBeenCalledTimes(1);
       expect(spy).toHaveBeenCalledWith('1');
+    });
+  });
+
+  describe('delete', () => {
+    it('should delete item with valid id', async () => {
+      const result: DeleteResult = {
+        raw: undefined,
+      };
+      const spy = jest.spyOn(service, 'remove').mockResolvedValue(result);
+      expect(controller.remove('id')).resolves.toBe(result);
+
+      expect(spy).toHaveBeenCalled();
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith('id');
     });
   });
 });
