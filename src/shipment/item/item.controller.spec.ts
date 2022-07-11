@@ -106,6 +106,16 @@ describe('ItemController', () => {
 
   describe('update', () => {
     it('sould have update the item with valid id', () => {});
-    it("sould have 'NotFoundException' for invalid id", () => {});
+    it("sould have 'NotFoundException' for invalid id", () => {
+      const newValue = {};
+      const spy = jest
+        .spyOn(service, 'update')
+        .mockRejectedValue(new NotFoundException());
+
+      expect(controller.update('id', newValue)).rejects.toThrow(
+        NotFoundException,
+      );
+      expect(spy).toBeCalledWith('id', newValue);
+    });
   });
 });
