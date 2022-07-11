@@ -93,5 +93,14 @@ describe('ItemController', () => {
       expect(spy).toHaveBeenCalledTimes(1);
       expect(spy).toHaveBeenCalledWith('id');
     });
+
+    it("should throw 'BadRequestException' for invalid id", () => {
+      const spy = jest
+        .spyOn(service, 'remove')
+        .mockRejectedValue(new BadRequestException());
+
+      expect(controller.remove('id')).rejects.toThrow(BadRequestException);
+      expect(spy).toHaveBeenCalledWith('id');
+    });
   });
 });
