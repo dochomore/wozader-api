@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
 import { Item } from './entities/item.entity';
@@ -118,11 +118,11 @@ export class ItemService {
     }
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<DeleteResult | NotFoundException> {
     try {
-      return await this.itemRepository.delete(id);
+      return this.itemRepository.delete(id);
     } catch (err) {
-      return new BadRequestException();
+      return new NotFoundException();
     }
   }
 }

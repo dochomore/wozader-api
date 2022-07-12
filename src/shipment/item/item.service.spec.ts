@@ -1,10 +1,15 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Connection, Repository } from 'typeorm';
-import { Shipment } from '../entities/shipment.entity';
+import { DeleteResult, Repository } from 'typeorm';
 import { Item } from './entities/item.entity';
 import { ItemService } from './item.service';
+
+const mockRepository = () => ({
+  findOne: jest.fn(),
+  find: jest.fn(),
+  delete: jest.fn(),
+});
 
 describe('ItemService', () => {
   let service: ItemService;
@@ -14,12 +19,10 @@ describe('ItemService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ItemService,
-        { provide: Connection, useValue: {} },
         {
-          provide: getRepositoryToken(Shipment),
-          useValue: {},
+          provide: getRepositoryToken(Item),
+          useFactory: mockRepository,
         },
-        { provide: getRepositoryToken(Item), useValue: { findOne: jest.fn } },
       ],
     }).compile();
 
@@ -45,6 +48,7 @@ describe('ItemService', () => {
         expect(spy).toBeCalledTimes(1);
       });
     });
+
     describe('otherwise', () => {
       it('should throw the NotFoundException', async () => {
         const itemId = '2de676c8-3440-4742-a349-929ab5e5757d';
@@ -57,6 +61,19 @@ describe('ItemService', () => {
         );
         expect(spy).toBeCalledTimes(1);
       });
+    });
+  });
+
+  describe('remove', () => {
+    it("should throw 'NotFoundException' for invalid id", async () => {
+      const removeSpy = jest
+        .spyOn(itemRepository, 'delete')
+        .mockRejectedValue(new NotFoundException());
+
+      expect(service.remove('id')).rejects.toThrow(NotFoundException);
+
+      expect(removeSpy).toHaveBeenCalledTimes(1);
+      expect(removeSpy).toHaveBeenCalledWith('id');
     });
   });
 });
