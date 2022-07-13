@@ -65,6 +65,18 @@ describe('ItemService', () => {
   });
 
   describe('remove', () => {
+    it('should remove item ', async () => {
+      const id = '';
+      const expectedResult = { affected: 1 } as DeleteResult;
+      const removeSpy = jest
+        .spyOn(itemRepository, 'delete')
+        .mockResolvedValue(expectedResult);
+
+      expect(service.remove(id)).resolves.toEqual(expectedResult);
+      expect(removeSpy).toHaveBeenCalledTimes(1);
+      expect(removeSpy).toHaveBeenCalledWith(id);
+    });
+
     it("should throw 'NotFoundException' for invalid id", async () => {
       const removeSpy = jest
         .spyOn(itemRepository, 'delete')
