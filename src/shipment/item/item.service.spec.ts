@@ -142,6 +142,18 @@ describe('ItemService', () => {
       expect(updateSpy).toHaveBeenCalled();
       expect(updateSpy).toHaveBeenCalledWith(id, dto);
     });
-    it('should throw [NotFoundException] for invalid id', async () => {});
+
+    it('should throw [NotFoundException] for invalid id', async () => {
+      const id = 'invalidId';
+      const dto = { name: 'yimesgen' };
+
+      const updateSpy = jest
+        .spyOn(itemRepository, 'update')
+        .mockRejectedValue(new NotFoundException());
+
+      expect(service.update(id, dto)).rejects.toThrow(NotFoundException);
+      expect(updateSpy).toHaveBeenCalled();
+      expect(updateSpy).toHaveBeenCalledWith(id, dto);
+    });
   });
 });
