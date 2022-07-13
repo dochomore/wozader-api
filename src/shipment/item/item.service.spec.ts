@@ -1,7 +1,7 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { DeleteResult, Repository } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { Item } from './entities/item.entity';
 import { ItemService } from './item.service';
 
@@ -9,6 +9,7 @@ const mockRepository = () => ({
   findOne: jest.fn(),
   find: jest.fn(),
   delete: jest.fn(),
+  update: jest.fn(),
   createQueryBuilder: jest.fn(),
   where: jest.fn(),
 });
@@ -128,7 +129,19 @@ describe('ItemService', () => {
   });
 
   describe('update', () => {
-    it('should update item ', async () => {});
+    it('should update item ', async () => {
+      const id = 'f1409812-38aa-40e0-9107-2f0e6a7b2239';
+      const dto = { name: 'yimesgen' };
+      const expectedResult = { affected: 1 } as UpdateResult;
+
+      const updateSpy = jest
+        .spyOn(itemRepository, 'update')
+        .mockResolvedValue(expectedResult);
+
+      expect(service.update(id, dto)).resolves.toEqual(expectedResult);
+      expect(updateSpy).toHaveBeenCalled();
+      expect(updateSpy).toHaveBeenCalledWith(id, dto);
+    });
     it('should throw [NotFoundException] for invalid id', async () => {});
   });
 });
