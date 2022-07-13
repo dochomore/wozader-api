@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
+  NotFoundException,
 } from '@nestjs/common';
 import { ItemService } from './item.service';
 import { CreateItemDto } from './dto/create-item.dto';
@@ -28,7 +29,7 @@ export class ItemController {
   @Get()
   findAll(
     @Param('shipmentId', new ParseUUIDPipe()) shipmentId: string,
-  ): Promise<Item[]> {
+  ): Promise<Item[] | NotFoundException> {
     return this.itemService.findAll(shipmentId);
   }
 

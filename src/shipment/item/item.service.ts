@@ -55,7 +55,10 @@ export class ItemService {
     }
   }
 
-  async create(shipmentId: string, createItemDto: CreateItemDto) {
+  async create(
+    shipmentId: string,
+    createItemDto: CreateItemDto,
+  ): Promise<Item | BadRequestException> {
     const {
       name,
       price,
@@ -73,7 +76,7 @@ export class ItemService {
     });
 
     try {
-      return await this.itemRepository.save(item);
+      return this.itemRepository.save(item);
     } catch (err) {
       throw new BadRequestException();
     }

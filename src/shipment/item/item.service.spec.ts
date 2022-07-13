@@ -1,11 +1,15 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { Location } from '../../location/entities/location.entity';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { CreateItemDto } from './dto/create-item.dto';
 import { Item } from './entities/item.entity';
 import { ItemService } from './item.service';
 
 const mockRepository = () => ({
+  create: jest.fn(),
+  save: jest.fn(),
   findOne: jest.fn(),
   find: jest.fn(),
   delete: jest.fn(),
@@ -154,6 +158,46 @@ describe('ItemService', () => {
       expect(service.update(id, dto)).rejects.toThrow(NotFoundException);
       expect(updateSpy).toHaveBeenCalled();
       expect(updateSpy).toHaveBeenCalledWith(id, dto);
+    });
+  });
+
+  describe('create', () => {
+    it('should create new item', async () => {
+      const id = 'f1409812-38aa-40e0-9107-2f0e6a7b2239';
+      const dto: CreateItemDto = {
+        name: 'name',
+        amountInQt: 0,
+        pricePerQt: 0,
+        price: 0,
+        startLocations: [],
+        endLocations: [],
+      };
+
+      const result: Item = {
+        name: 'Yimesge',
+        amountInQt: 23,
+        pricePerQt: 130,
+        startLocations: [],
+        endLocations: [],
+        itemId: '',
+        createdAt: undefined,
+        updatedAt: '',
+        price: 0,
+        shipmentId: '',
+      };
+
+      const createSpy = jest
+        .spyOn(itemRepository, 'create')
+        .mockImplementation(() => result);
+
+      const saveSpy = jest
+        .spyOn(itemRepository, 'save')
+        .mockResolvedValueOnce(result);
+
+      expect(service.create(id, dto)).resolves.toEqual(result);
+
+      expect(createSpy).toHaveBeenCalled();
+      expect(saveSpy).toHaveBeenCalled();
     });
   });
 });
