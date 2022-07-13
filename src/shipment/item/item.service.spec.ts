@@ -126,4 +126,9 @@ describe('ItemService', () => {
       expect(findSpy).toHaveBeenCalledTimes(1);
     });
   });
+
+  describe('update', () => {
+    it('should update item ', async () => {});
+    it('should throw [NotFoundException] for invalid id', async () => {});
+  });
 });
