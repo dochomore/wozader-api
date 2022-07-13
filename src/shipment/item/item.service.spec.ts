@@ -1,7 +1,6 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Location } from '../../location/entities/location.entity';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { CreateItemDto } from './dto/create-item.dto';
 import { Item } from './entities/item.entity';
@@ -198,6 +197,44 @@ describe('ItemService', () => {
 
       expect(createSpy).toHaveBeenCalled();
       expect(saveSpy).toHaveBeenCalled();
+    });
+
+    it('should throw [NotFoundException] for invaid id', async () => {
+      const id = 'invalidId';
+      const dto: CreateItemDto = {
+        name: 'Yimesgen',
+        price: 12000,
+        pricePerQt: 180,
+        amountInQt: 300,
+        startLocations: [],
+        endLocations: [],
+      };
+
+      const result: Item = {
+        name: 'Yimesge',
+        amountInQt: 23,
+        pricePerQt: 130,
+        startLocations: [],
+        endLocations: [],
+        itemId: '',
+        createdAt: undefined,
+        updatedAt: '',
+        price: 0,
+        shipmentId: '',
+      };
+
+      const createSpy = jest
+        .spyOn(itemRepository, 'create')
+        .mockImplementation(() => result);
+
+      const saveSpy = jest
+        .spyOn(itemRepository, 'save')
+        .mockRejectedValue(new NotFoundException());
+
+      expect(service.create(id, dto)).rejects.toThrow(NotFoundException);
+
+      expect(createSpy).toHaveBeenCalledTimes(1);
+      expect(saveSpy).toHaveBeenCalledTimes(1);
     });
   });
 });
