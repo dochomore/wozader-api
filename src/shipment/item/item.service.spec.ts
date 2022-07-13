@@ -108,5 +108,22 @@ describe('ItemService', () => {
       expect(service.findAll(shipmentId)).resolves.toEqual(result);
       expect(findSpy).toHaveBeenCalledTimes(1);
     });
+
+    it('shoud throw [NotFoundException] for invalid id', async () => {
+      const shipmentId = 'invalidShipmentId';
+
+      const createQueryBuilder: any = {
+        where: () => createQueryBuilder,
+        getMany: () => new NotFoundException(),
+      };
+
+      const findSpy = jest
+        .spyOn(itemRepository, 'createQueryBuilder')
+        .mockImplementation(() => createQueryBuilder);
+
+      expect(service.findAll(shipmentId)).resolves.toThrow(NotFoundException);
+      expect(findSpy).toHaveBeenCalled();
+      expect(findSpy).toHaveBeenCalledTimes(1);
+    });
   });
 });
