@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
 import { Item } from './entities/item.entity';
@@ -104,7 +104,10 @@ export class ItemService {
     }
   }
 
-  update(id: string, updateItemDto: UpdateItemDto) {
+  update(
+    id: string,
+    updateItemDto: UpdateItemDto,
+  ): Promise<UpdateResult | BadRequestException | NotFoundException> {
     const { name, pricePerQt, amountInQt, price } = updateItemDto;
     try {
       return this.itemRepository.update(id, {
