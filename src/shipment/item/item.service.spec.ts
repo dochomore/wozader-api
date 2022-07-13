@@ -1,4 +1,4 @@
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
@@ -9,6 +9,8 @@ const mockRepository = () => ({
   findOne: jest.fn(),
   find: jest.fn(),
   delete: jest.fn(),
+  createQueryBuilder: jest.fn(),
+  where: jest.fn(),
 });
 
 describe('ItemService', () => {
@@ -86,6 +88,25 @@ describe('ItemService', () => {
 
       expect(removeSpy).toHaveBeenCalledTimes(1);
       expect(removeSpy).toHaveBeenCalledWith('id');
+    });
+  });
+
+  describe('find all items', () => {
+    it('should return list of item', async () => {
+      const shipmentId = 'f1409812-38aa-40e0-9107-2f0e6a7b2239';
+      const result = [];
+
+      const createQueryBuilder: any = {
+        where: () => createQueryBuilder,
+        getMany: () => [],
+      };
+
+      const findSpy = jest
+        .spyOn(itemRepository, 'createQueryBuilder')
+        .mockImplementation(() => createQueryBuilder);
+
+      expect(service.findAll(shipmentId)).resolves.toEqual(result);
+      expect(findSpy).toHaveBeenCalledTimes(1);
     });
   });
 });
