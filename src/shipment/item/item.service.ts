@@ -5,10 +5,10 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { Location } from '../../location/entities/location.entity';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
 import { Item } from './entities/item.entity';
-import { Location } from '../../location/entities/location.entity';
 
 @Injectable()
 export class ItemService {
@@ -107,17 +107,21 @@ export class ItemService {
   update(
     id: string,
     updateItemDto: UpdateItemDto,
-  ): Promise<UpdateResult | BadRequestException | NotFoundException> {
+  ): Promise<UpdateResult | NotFoundException> {
     const { name, pricePerQt, amountInQt, price } = updateItemDto;
     try {
-      return this.itemRepository.update(id, {
+      const result = this.itemRepository.update(id, {
         name: name,
         price: price,
         pricePerQt: pricePerQt,
         amountInQt: amountInQt,
       });
+      if (!result) {
+        throw new NotFoundException();
+      }
+      return result;
     } catch (err) {
-      throw new BadRequestException();
+      throw new NotFoundException();
     }
   }
 
