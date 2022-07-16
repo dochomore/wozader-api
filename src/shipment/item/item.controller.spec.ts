@@ -2,7 +2,6 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { DeleteResult, UpdateResult } from 'typeorm';
-import { serialize } from 'v8';
 import { Item } from './entities/item.entity';
 import { ItemController } from './item.controller';
 import { ItemService } from './item.service';
@@ -162,6 +161,22 @@ describe('ItemController', () => {
       const spy = jest.spyOn(service, 'findAllLocations').mockResolvedValue([]);
       expect(controller.findAllLocations(shipmentId, itemId)).resolves.toEqual(
         [],
+      );
+
+      expect(spy).toHaveBeenCalledWith(shipmentId, itemId);
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should throw NotFoundException for invalid item id', async () => {
+      const shipmentId = 'shipmentId';
+      const itemId = 'itemId';
+
+      const spy = jest
+        .spyOn(service, 'findAllLocations')
+        .mockRejectedValue(new NotFoundException());
+
+      expect(controller.findAllLocations(shipmentId, itemId)).rejects.toThrow(
+        new NotFoundException(),
       );
 
       expect(spy).toHaveBeenCalledWith(shipmentId, itemId);
