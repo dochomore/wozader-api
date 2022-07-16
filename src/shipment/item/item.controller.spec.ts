@@ -182,5 +182,21 @@ describe('ItemController', () => {
       expect(spy).toHaveBeenCalledWith(shipmentId, itemId);
       expect(spy).toHaveBeenCalledTimes(1);
     });
+
+    it('should throw NotFoundException for invalid shipment id', async () => {
+      const shipmentId = 'shipmentId';
+      const itemId = 'itemId';
+
+      const spy = jest
+        .spyOn(service, 'findAllLocations')
+        .mockRejectedValue(new NotFoundException());
+
+      expect(controller.findAllLocations(shipmentId, itemId)).rejects.toThrow(
+        new NotFoundException(),
+      );
+
+      expect(spy).toHaveBeenCalledWith(shipmentId, itemId);
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
   });
 });
