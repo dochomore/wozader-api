@@ -90,10 +90,16 @@ export class ItemService {
 
   async findAll(shipmentId: string): Promise<Item[] | NotFoundException> {
     try {
-      return await this.itemRepository
+      const result = await this.itemRepository
         .createQueryBuilder('item')
         .where('item.shipmentId = :shipmentId', { shipmentId: shipmentId })
         .getMany();
+
+      if (!result) {
+        throw new NotFoundException();
+      }
+
+      return result;
     } catch (err) {
       return new NotFoundException();
     }

@@ -120,7 +120,7 @@ describe('ItemService', () => {
 
       const createQueryBuilder: any = {
         where: () => createQueryBuilder,
-        getMany: () => new NotFoundException(),
+        getMany: () => undefined,
       };
 
       const findSpy = jest
