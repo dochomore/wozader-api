@@ -61,7 +61,8 @@ describe('ItemService', () => {
 
         const spy = jest
           .spyOn(itemRepository, 'findOne')
-          .mockRejectedValue(new NotFoundException());
+          .mockResolvedValue(null);
+
         expect(service.findOne(itemId)).rejects.toBeInstanceOf(
           NotFoundException,
         );
