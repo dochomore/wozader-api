@@ -68,14 +68,6 @@ export class ItemService {
       endLocations,
     } = createItemDto;
 
-    if (!startLocations || !endLocations) {
-      return new BadRequestException();
-    }
-
-    if (startLocations.length === 0 || endLocations.length === 0) {
-      return new BadRequestException();
-    }
-
     try {
       const item = this.itemRepository.create({
         name: name,

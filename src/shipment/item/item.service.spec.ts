@@ -1,4 +1,4 @@
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
@@ -199,46 +199,6 @@ describe('ItemService', () => {
       expect(saveSpy).toHaveBeenCalled();
     });
 
-    it('should throw [BadRequestException] for empty start location', async () => {
-      const id = 'f1409812-38aa-40e0-9107-2f0e6a7b2239';
-
-      const dto: any = {
-        name: 'Yimesgen',
-        price: 12000,
-        pricePerQt: 180,
-        amountInQt: 300, // no start location here
-        endLocations: [],
-      };
-
-      const result: Item = {
-        name: 'Yimesge',
-        amountInQt: 23,
-        pricePerQt: 130,
-        startLocations: [],
-        endLocations: [],
-        itemId: '',
-        createdAt: undefined,
-        updatedAt: '',
-        price: 0,
-        shipmentId: '',
-      };
-
-      const createSpy = jest
-        .spyOn(itemRepository, 'create')
-        .mockImplementation(() => result);
-
-      const saveSpy = jest
-        .spyOn(itemRepository, 'save')
-        .mockResolvedValue(result);
-
-      expect(service.create(id, dto)).rejects.toBeInstanceOf(
-        BadRequestException,
-      );
-
-      expect(createSpy).toHaveBeenCalledTimes(0);
-      expect(saveSpy).toHaveBeenCalledTimes(0);
-    });
-
     it('should throw [NotFoundException] for invaid id', async () => {
       const id = 'invalidId';
       const dto: CreateItemDto = {
@@ -271,7 +231,7 @@ describe('ItemService', () => {
         .spyOn(itemRepository, 'save')
         .mockRejectedValue(new NotFoundException());
 
-      expect(service.create(id, dto)).rejects.toThrow(BadRequestException);
+      expect(service.create(id, dto)).rejects.toThrow(NotFoundException);
 
       expect(createSpy).toHaveBeenCalledTimes(1);
       expect(saveSpy).toHaveBeenCalledTimes(1);
