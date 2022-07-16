@@ -139,5 +139,17 @@ describe('ItemController', () => {
       expect(controller.create(id, dto)).resolves.toEqual(result);
       expect(spy).toHaveBeenLastCalledWith(id, dto);
     });
+
+    it('should throw NotFoundException', async () => {
+      const id = 'id';
+      const dto: any = {};
+
+      const spy = jest
+        .spyOn(service, 'create')
+        .mockRejectedValue(new NotFoundException());
+
+      expect(controller.create(id, dto)).rejects.toThrow(NotFoundException);
+      expect(spy).toHaveBeenLastCalledWith(id, dto);
+    });
   });
 });
