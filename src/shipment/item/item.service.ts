@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { Location } from '../../location/entities/location.entity';
@@ -54,28 +58,40 @@ export class ItemService {
   async create(
     shipmentId: string,
     createItemDto: CreateItemDto,
-  ): Promise<Item | NotFoundException> {
+  ): Promise<Item | NotFoundException | BadRequestException> {
     const {
       name,
       price,
       pricePerQt,
       amountInQt,
       startLocations,
-      endLocations
+      endLocations,
     } = createItemDto;
-    const item = this.itemRepository.create({
-      name: name,
-      price: price,
-      pricePerQt: pricePerQt,
-      amountInQt: amountInQt,
-      shipmentId: shipmentId,
-      startLocations: startLocations,
-      endLocations: endLocations,
-    });
+
+    if (!startLocations || !endLocations) {
+      return new BadRequestException();
+    }
+
+    if (startLocations.length === 0 || endLocations.length === 0) {
+      return new BadRequestException();
+    }
 
     try {
+      const item = this.itemRepository.create({
+        name: name,
+        price: price,
+        pricePerQt: pricePerQt,
+        amountInQt: amountInQt,
+        shipmentId: shipmentId,
+        startLocations: startLocations,
+        endLocations: endLocations,
+      });
+
       return this.itemRepository.save(item);
     } catch (err) {
+      if (err instanceof BadRequestException) {
+        return new BadRequestException();
+      }
       return new NotFoundException();
     }
   }

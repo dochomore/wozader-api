@@ -128,4 +128,16 @@ describe('ItemController', () => {
       expect(spy).toBeCalledTimes(1);
     });
   });
+
+  describe('create', () => {
+    it('should create item', async () => {
+      const result: any = {};
+      const id = 'id';
+      const dto: any = {};
+
+      const spy = jest.spyOn(service, 'create').mockResolvedValue(result);
+      expect(controller.create(id, dto)).resolves.toEqual(result);
+      expect(spy).toHaveBeenLastCalledWith(id, dto);
+    });
+  });
 });
