@@ -136,7 +136,11 @@ export class ItemService {
 
   async remove(id: string): Promise<DeleteResult | NotFoundException> {
     try {
-      return this.itemRepository.delete(id);
+      const result: DeleteResult = await this.itemRepository.delete(id);
+      if (result.affected === 0) {
+        throw new NotFoundException();
+      }
+      return result;
     } catch (err) {
       return new NotFoundException();
     }
