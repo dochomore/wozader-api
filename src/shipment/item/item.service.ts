@@ -113,19 +113,19 @@ export class ItemService {
     }
   }
 
-  update(
+  async update(
     id: string,
     updateItemDto: UpdateItemDto,
   ): Promise<UpdateResult | NotFoundException> {
     const { name, pricePerQt, amountInQt, price } = updateItemDto;
     try {
-      const result = this.itemRepository.update(id, {
+      const result: UpdateResult = await this.itemRepository.update(id, {
         name: name,
         price: price,
         pricePerQt: pricePerQt,
         amountInQt: amountInQt,
       });
-      if (!result) {
+      if (result.affected === 0) {
         throw new NotFoundException();
       }
       return result;

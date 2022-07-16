@@ -150,10 +150,11 @@ describe('ItemService', () => {
     it('should throw [NotFoundException] for invalid id', async () => {
       const id = 'invalidId';
       const dto = { name: 'yimesgen' };
+      const result = { affected: 0 } as UpdateResult;
 
       const updateSpy = jest
         .spyOn(itemRepository, 'update')
-        .mockRejectedValue(new NotFoundException());
+        .mockResolvedValue(result);
 
       expect(service.update(id, dto)).rejects.toThrow(NotFoundException);
       expect(updateSpy).toHaveBeenCalled();
