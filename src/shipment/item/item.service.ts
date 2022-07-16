@@ -58,7 +58,7 @@ export class ItemService {
   async create(
     shipmentId: string,
     createItemDto: CreateItemDto,
-  ): Promise<Item | NotFoundException | BadRequestException> {
+  ): Promise<Item | BadRequestException> {
     const {
       name,
       price,
@@ -79,11 +79,12 @@ export class ItemService {
         endLocations: endLocations,
       });
 
-      return this.itemRepository.save(item);
-    } catch (err) {
-      if (err instanceof BadRequestException) {
-        return new BadRequestException();
+      const result = this.itemRepository.save(item);
+      if (!result) {
+        throw new NotFoundException();
       }
+      return result;
+    } catch (err) {
       return new NotFoundException();
     }
   }

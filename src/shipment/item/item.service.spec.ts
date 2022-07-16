@@ -1,4 +1,4 @@
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
@@ -232,9 +232,9 @@ describe('ItemService', () => {
 
       const saveSpy = jest
         .spyOn(itemRepository, 'save')
-        .mockRejectedValue(new NotFoundException());
+        .mockImplementation(() => undefined);
 
-      expect(service.create(id, dto)).rejects.toThrow(NotFoundException);
+      expect(service.create(id, dto)).resolves.toThrow(NotFoundException);
 
       expect(createSpy).toHaveBeenCalledTimes(1);
       expect(saveSpy).toHaveBeenCalledTimes(1);
