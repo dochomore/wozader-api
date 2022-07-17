@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Shipment } from './entities/shipment.entity';
@@ -38,6 +39,17 @@ describe('ShipmentController', () => {
 
       expect(controller.create(dto)).resolves.toEqual(member);
       expect(spy).toHaveBeenCalledWith(dto);
+    });
+
+    it('should throw BadRequestException', async () => {
+      const dto: any = {};
+      const spy = jest
+        .spyOn(service, 'create')
+        .mockRejectedValue(new BadRequestException());
+
+      expect(controller.create(dto)).rejects.toThrow(BadRequestException);
+      expect(spy).toHaveBeenCalledWith(dto);
+      expect(spy).toHaveBeenCalledTimes(1);
     });
   });
 });
