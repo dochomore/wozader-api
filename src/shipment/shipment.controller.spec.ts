@@ -52,4 +52,16 @@ describe('ShipmentController', () => {
       expect(spy).toHaveBeenCalledTimes(1);
     });
   });
+
+  describe('update', () => {
+    it('should update shipment', async () => {
+      const id = 'id';
+      const updateDto: any = {};
+
+      const spy = jest.spyOn(service, 'update').mockResolvedValue(updateDto);
+
+      expect(controller.update(id, updateDto)).resolves.toEqual(updateDto);
+      expect(spy).toHaveBeenCalledWith(id, updateDto);
+    });
+  });
 });
