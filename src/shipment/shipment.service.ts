@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateShipmentDto } from './dto/create-shipment.dto';
@@ -14,7 +18,7 @@ export class ShipmentService {
   ) {}
 
   // creates new shipment
-  create(createShipmentDto: CreateShipmentDto) {
+  async create(createShipmentDto: CreateShipmentDto) {
     const {
       description,
       maxLoadSize,
@@ -25,7 +29,7 @@ export class ShipmentService {
       items,
     } = createShipmentDto;
 
-    const shipment = this.shipmentRepository.create({
+    const shipment = await this.shipmentRepository.create({
       createdAt: new Date(),
       updatedAt: new Date(),
       description: description,
@@ -39,11 +43,13 @@ export class ShipmentService {
     });
 
     try {
-      return this.shipmentRepository.save(shipment);
+      const result = await this.shipmentRepository.save(shipment);
+      if (!result) {
+        throw new BadRequestException();
+      }
+      return result;
     } catch (err) {
-      throw new ForbiddenException(
-        'there is somehting error with your entries',
-      );
+      return new BadRequestException();
     }
   }
 
