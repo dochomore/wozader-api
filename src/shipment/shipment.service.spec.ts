@@ -17,6 +17,7 @@ const mockRepository = () => ({
   createQueryBuilder: jest.fn(),
   delete: jest.fn(),
   update: jest.fn(),
+  find: jest.fn(),
 });
 
 describe('ShipmentService', () => {
@@ -193,6 +194,25 @@ describe('ShipmentService', () => {
 
       expect(service.update(id, dto)).resolves.toThrow(NotFoundException);
       expect(spy).toHaveBeenCalledWith(id, dto);
+    });
+  });
+
+  describe('findAll', () => {
+    it('should return list of shipment', async () => {
+      const result: any = [];
+
+      const queryBuilder: any = {
+        leftJoinAndSelect: () => queryBuilder,
+        select: () => queryBuilder,
+        getMany: () => result,
+      };
+
+      const spy = jest
+        .spyOn(repository, 'createQueryBuilder')
+        .mockImplementation(() => queryBuilder);
+
+      expect(service.findAll()).toEqual(result);
+      expect(spy).toHaveBeenCalledTimes(1);
     });
   });
 });
