@@ -52,13 +52,20 @@ export class ShipmentService {
     }
   }
 
-  findAll(): Promise<Shipment[]> {
-    // return this.shipmentRepository.find();
-    return this.shipmentRepository
-      .createQueryBuilder('shipment')
-      .leftJoinAndSelect('shipment.items', 'item')
-      .select(['shipment', 'item.itemId', 'item.name', 'item.price'])
-      .getMany();
+  async findAll(): Promise<Shipment[] | BadRequestException> {
+    try {
+      const result = await this.shipmentRepository
+        .createQueryBuilder('shipment')
+        .leftJoinAndSelect('shipment.items', 'item')
+        .select(['shipment', 'item.itemId', 'item.name', 'item.price'])
+        .getMany();
+      if (!result) {
+        throw new BadRequestException();
+      }
+      return result;
+    } catch (error) {
+      return new BadRequestException();
+    }
   }
 
   async findOne(id: string): Promise<Shipment | BadRequestException> {

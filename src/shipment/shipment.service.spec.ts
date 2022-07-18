@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { async } from 'rxjs';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { Shipment } from './entities/shipment.entity';
 import { ShipmentStatus } from './shipment-status.enums';
@@ -204,14 +205,29 @@ describe('ShipmentService', () => {
       const queryBuilder: any = {
         leftJoinAndSelect: () => queryBuilder,
         select: () => queryBuilder,
-        getMany: () => result,
+        getMany: async () => result,
       };
 
       const spy = jest
         .spyOn(repository, 'createQueryBuilder')
         .mockImplementation(() => queryBuilder);
 
-      expect(service.findAll()).toEqual(result);
+      expect(service.findAll()).resolves.toEqual(result);
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should throw BadRequestException', async () => {
+      const queryBuilder: any = {
+        leftJoinAndSelect: () => queryBuilder,
+        select: () => queryBuilder,
+        getMany: async () => undefined,
+      };
+
+      const spy = jest
+        .spyOn(repository, 'createQueryBuilder')
+        .mockImplementation(() => queryBuilder);
+
+      expect(service.findAll()).resolves.toThrow(BadRequestException);
       expect(spy).toHaveBeenCalledTimes(1);
     });
   });
