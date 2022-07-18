@@ -1,7 +1,7 @@
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, GoneException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { Shipment } from './entities/shipment.entity';
 import { ShipmentStatus } from './shipment-status.enums';
 import { ShipmentService } from './shipment.service';
@@ -9,6 +9,9 @@ import { ShipmentService } from './shipment.service';
 const mockRepository = () => ({
   create: jest.fn(),
   save: jest.fn(),
+  findOne: jest.fn(),
+  createQueryBuilder: jest.fn(),
+  delete: jest.fn(),
 });
 
 describe('ShipmentService', () => {
@@ -84,6 +87,70 @@ describe('ShipmentService', () => {
 
       expect(service.create(dto)).resolves.toThrow(BadRequestException);
       expect(spy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('findOne', () => {
+    it.skip('should return shipment', async () => {
+      const shipment: any = { description: 'shipmentDiscription' };
+      const id = 'id';
+
+      const queryBuilder: any = {
+        where: () => queryBuilder,
+        leftJoinAndSelect: () => queryBuilder,
+        select: () => queryBuilder,
+        getOne: () => shipment,
+      };
+
+      const queryBuilderSpy = jest
+        .spyOn(repository, 'createQueryBuilder')
+        .mockImplementation(() => queryBuilder);
+
+      // const spy = jest
+      //   .spyOn(repository, 'findOne')
+      //   .mockImplementation(() => shipment);
+
+      expect(service.findOne(id)).resolves.toEqual(shipment);
+      // expect(spy).not.toHaveBeenCalled();
+      expect(queryBuilderSpy).toHaveBeenCalled();
+    });
+
+    it.skip('should throw NotFoundException', async () => {
+      const shipment: any = { description: 'shipmentDiscription' };
+      const id = 'id';
+
+      const queryBuilder: any = {
+        where: () => queryBuilder,
+        leftJoinAndSelect: () => queryBuilder,
+        select: () => queryBuilder,
+        getOne: () => shipment,
+      };
+
+      const queryBuilderSpy = jest
+        .spyOn(repository, 'createQueryBuilder')
+        .mockImplementation(() => queryBuilder);
+
+      const spy = jest
+        .spyOn(repository, 'findOne')
+        .mockResolvedValue(undefined);
+
+      expect(service.findOne(id)).resolves.toThrow(GoneException);
+      expect(spy).toHaveBeenCalled();
+      expect(queryBuilderSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('remove', () => {
+    it('should remove shipment', async () => {
+      const id = 'id';
+      const deleteResult = { affected: 1 } as DeleteResult;
+
+      const spy = jest
+        .spyOn(repository, 'delete')
+        .mockResolvedValue(deleteResult);
+
+      expect(service.remove(id)).resolves.toEqual(deleteResult);
+      expect(spy).toHaveBeenCalledWith(id);
     });
   });
 });

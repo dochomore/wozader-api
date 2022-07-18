@@ -1,6 +1,10 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { CreateShipmentDto } from './dto/create-shipment.dto';
 import { UpdateShipmentDto } from './dto/update-shipment.dto';
 import { Shipment } from './entities/shipment.entity';
@@ -57,13 +61,23 @@ export class ShipmentService {
       .getMany();
   }
 
-  findOne(id: string): Promise<Shipment> {
-    return this.shipmentRepository
-      .createQueryBuilder('shipment')
-      .leftJoinAndSelect('shipment.items', 'item')
-      .select(['shipment', 'item.itemId', 'item.name', 'item.price'])
-      .where('shipment.shipmentId =:shipmentId', { shipmentId: id })
-      .getOne();
+  async findOne(id: string): Promise<Shipment | BadRequestException> {
+    try {
+      const result = await this.shipmentRepository
+        .createQueryBuilder('shipment')
+        .leftJoinAndSelect('shipment.items', 'item')
+        .select(['shipment', 'item.itemId', 'item.name', 'item.price'])
+        .where('shipment.shipmentId =:shipmentId', { shipmentId: id })
+        .getOne();
+
+      if (!result) {
+        throw new BadRequestException();
+      }
+
+      return result;
+    } catch (error) {
+      return new BadRequestException();
+    }
   }
 
   update(id: string, updateShipmentDto: UpdateShipmentDto) {
@@ -71,7 +85,15 @@ export class ShipmentService {
     return this.shipmentRepository.update(id, { description: description });
   }
 
-  async remove(id: string): Promise<void> {
-    await this.shipmentRepository.delete(id);
+  async remove(id: string): Promise<DeleteResult | NotFoundException> {
+    try {
+      const resutl = await this.shipmentRepository.delete(id);
+      if (resutl.affected === 0) {
+        throw new NotFoundException();
+      }
+      return resutl;
+    } catch (error) {
+      return new NotFoundException();
+    }
   }
 }
