@@ -1,6 +1,7 @@
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { NotFoundError } from 'rxjs';
 import { Shipment } from './entities/shipment.entity';
 import { ShipmentController } from './shipment.controller';
 import { ShipmentService } from './shipment.service';
@@ -61,6 +62,20 @@ describe('ShipmentController', () => {
       const spy = jest.spyOn(service, 'update').mockResolvedValue(updateDto);
 
       expect(controller.update(id, updateDto)).resolves.toEqual(updateDto);
+      expect(spy).toHaveBeenCalledWith(id, updateDto);
+    });
+
+    it('should throw NotFoundException', async () => {
+      const id = 'id';
+      const updateDto: any = {};
+
+      const spy = jest
+        .spyOn(service, 'update')
+        .mockRejectedValue(new NotFoundException());
+
+      expect(controller.update(id, updateDto)).rejects.toThrow(
+        NotFoundException,
+      );
       expect(spy).toHaveBeenCalledWith(id, updateDto);
     });
   });
