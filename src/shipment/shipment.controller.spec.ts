@@ -87,5 +87,13 @@ describe('ShipmentController', () => {
       expect(controller.findAll()).resolves.toEqual(result);
       expect(spy).toHaveBeenCalledTimes(1);
     });
+
+    it('should throw BadRequestException', async () => {
+      const spy = jest
+        .spyOn(service, 'findAll')
+        .mockRejectedValue(new BadRequestException());
+      expect(controller.findAll()).rejects.toThrow(BadRequestException);
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
   });
 });
