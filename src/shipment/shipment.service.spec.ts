@@ -183,5 +183,16 @@ describe('ShipmentService', () => {
       expect(service.update(id, dto)).resolves.toEqual(updateResult);
       expect(spy).toHaveBeenCalledWith(id, dto);
     });
+    it('should throw NotFoundException', async () => {
+      const id = 'id';
+      const dto = {};
+      const updateResult = { affected: 0 } as UpdateResult;
+      const spy = jest
+        .spyOn(repository, 'update')
+        .mockResolvedValue(updateResult);
+
+      expect(service.update(id, dto)).resolves.toThrow(NotFoundException);
+      expect(spy).toHaveBeenCalledWith(id, dto);
+    });
   });
 });
