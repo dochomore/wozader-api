@@ -1,4 +1,8 @@
-import { BadRequestException, GoneException } from '@nestjs/common';
+import {
+  BadRequestException,
+  GoneException,
+  NotFoundException,
+} from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
@@ -150,6 +154,18 @@ describe('ShipmentService', () => {
         .mockResolvedValue(deleteResult);
 
       expect(service.remove(id)).resolves.toEqual(deleteResult);
+      expect(spy).toHaveBeenCalledWith(id);
+    });
+
+    it('should throw NotFoundException', async () => {
+      const id = 'id';
+      const deleteResult = { affected: 0 } as DeleteResult;
+
+      const spy = jest
+        .spyOn(repository, 'delete')
+        .mockResolvedValue(deleteResult);
+
+      expect(service.remove(id)).resolves.toThrow(NotFoundException);
       expect(spy).toHaveBeenCalledWith(id);
     });
   });
