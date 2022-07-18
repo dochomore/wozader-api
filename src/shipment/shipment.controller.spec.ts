@@ -79,4 +79,13 @@ describe('ShipmentController', () => {
       expect(spy).toHaveBeenCalledWith(id, updateDto);
     });
   });
+
+  describe('findAll', () => {
+    it('should return shipments', async () => {
+      const result = [];
+      const spy = jest.spyOn(service, 'findAll').mockResolvedValue(result);
+      expect(controller.findAll()).resolves.toEqual(result);
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+  });
 });
