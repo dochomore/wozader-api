@@ -1,11 +1,6 @@
-import {
-  BadRequestException,
-  GoneException,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { async } from 'rxjs';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { Shipment } from './entities/shipment.entity';
 import { ShipmentStatus } from './shipment-status.enums';
@@ -98,28 +93,23 @@ describe('ShipmentService', () => {
   });
 
   describe('findOne', () => {
-    it.skip('should return shipment', async () => {
-      const shipment: any = { description: 'shipmentDiscription' };
+    it('should return shipment', async () => {
+      const shipment: any = {};
       const id = 'id';
 
       const queryBuilder: any = {
         where: () => queryBuilder,
         leftJoinAndSelect: () => queryBuilder,
         select: () => queryBuilder,
-        getOne: () => shipment,
+        getOne: async () => shipment,
       };
 
       const queryBuilderSpy = jest
         .spyOn(repository, 'createQueryBuilder')
         .mockImplementation(() => queryBuilder);
 
-      // const spy = jest
-      //   .spyOn(repository, 'findOne')
-      //   .mockImplementation(() => shipment);
-
       expect(service.findOne(id)).resolves.toEqual(shipment);
-      // expect(spy).not.toHaveBeenCalled();
-      expect(queryBuilderSpy).toHaveBeenCalled();
+      expect(queryBuilderSpy).toHaveBeenCalledTimes(1);
     });
 
     it('should throw NotFoundException', async () => {
