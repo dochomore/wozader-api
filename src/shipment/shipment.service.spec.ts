@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { DeleteResult, Repository } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { Shipment } from './entities/shipment.entity';
 import { ShipmentStatus } from './shipment-status.enums';
 import { ShipmentService } from './shipment.service';
@@ -16,6 +16,7 @@ const mockRepository = () => ({
   findOne: jest.fn(),
   createQueryBuilder: jest.fn(),
   delete: jest.fn(),
+  update: jest.fn(),
 });
 
 describe('ShipmentService', () => {
@@ -167,6 +168,20 @@ describe('ShipmentService', () => {
 
       expect(service.remove(id)).resolves.toThrow(NotFoundException);
       expect(spy).toHaveBeenCalledWith(id);
+    });
+  });
+
+  describe('update', () => {
+    it('should udpate shipment', async () => {
+      const id = 'id';
+      const dto = {};
+      const updateResult = { affected: 1 } as UpdateResult;
+      const spy = jest
+        .spyOn(repository, 'update')
+        .mockResolvedValue(updateResult);
+
+      expect(service.update(id, dto)).resolves.toEqual(updateResult);
+      expect(spy).toHaveBeenCalledWith(id, dto);
     });
   });
 });

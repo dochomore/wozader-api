@@ -80,9 +80,18 @@ export class ShipmentService {
     }
   }
 
-  update(id: string, updateShipmentDto: UpdateShipmentDto) {
-    const { description } = updateShipmentDto;
-    return this.shipmentRepository.update(id, { description: description });
+  async update(id: string, updateShipmentDto: UpdateShipmentDto) {
+    try {
+      const result = await this.shipmentRepository.update(id, {
+        ...updateShipmentDto,
+      });
+      if (result.affected === 0) {
+        throw new NotFoundException();
+      }
+      return result;
+    } catch (error) {
+      return new NotFoundException();
+    }
   }
 
   async remove(id: string): Promise<DeleteResult | NotFoundException> {
