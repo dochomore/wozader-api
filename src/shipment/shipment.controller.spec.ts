@@ -114,4 +114,14 @@ describe('ShipmentController', () => {
       expect(spy).toHaveBeenCalledWith(id);
     });
   });
+
+  describe('remove', () => {
+    it('should remove member', async () => {
+      const id = 'id';
+      const result: any = {};
+      const spy = jest.spyOn(service, 'remove').mockResolvedValue(result);
+      expect(controller.remove(id)).resolves.toEqual(result);
+      expect(spy).toHaveBeenCalledWith(id);
+    });
+  });
 });
