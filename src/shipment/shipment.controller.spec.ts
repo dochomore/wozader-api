@@ -104,5 +104,14 @@ describe('ShipmentController', () => {
       expect(service.findOne(id)).resolves.toEqual(member);
       expect(spy).toHaveBeenCalledWith(id);
     });
+    it('should throw NotFoundException', async () => {
+      const id = 'id';
+      const spy = jest
+        .spyOn(service, 'findOne')
+        .mockRejectedValue(new NotFoundException());
+
+      expect(service.findOne(id)).rejects.toThrow(NotFoundException);
+      expect(spy).toHaveBeenCalledWith(id);
+    });
   });
 });
