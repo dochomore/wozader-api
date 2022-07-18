@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -55,6 +56,33 @@ describe('ShipmentService', () => {
       jest.spyOn(repository, 'save').mockResolvedValue(shipment);
 
       expect(service.create(dto)).resolves.toEqual(shipment);
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should throw error', async () => {
+      const shipment: Shipment = {
+        shipmentId: '',
+        createdAt: undefined,
+        updatedAt: undefined,
+        minLoadSize: 0,
+        maxLoadSize: 0,
+        vehicleModel: '',
+        vehicleMaker: '',
+        vehicleProductionYear: '',
+        description: '',
+        status: ShipmentStatus.OPEN,
+        items: [],
+      };
+
+      const dto: any = {};
+
+      const spy = jest
+        .spyOn(repository, 'create')
+        .mockImplementation(() => shipment);
+
+      jest.spyOn(repository, 'save').mockRejectedValue(undefined);
+
+      expect(service.create(dto)).resolves.toThrow(BadRequestException);
       expect(spy).toHaveBeenCalledTimes(1);
     });
   });
