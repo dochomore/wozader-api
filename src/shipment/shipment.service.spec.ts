@@ -122,28 +122,22 @@ describe('ShipmentService', () => {
       expect(queryBuilderSpy).toHaveBeenCalled();
     });
 
-    it.skip('should throw NotFoundException', async () => {
-      const shipment: any = { description: 'shipmentDiscription' };
+    it('should throw NotFoundException', async () => {
       const id = 'id';
 
       const queryBuilder: any = {
         where: () => queryBuilder,
         leftJoinAndSelect: () => queryBuilder,
         select: () => queryBuilder,
-        getOne: () => shipment,
+        getOne: async () => undefined,
       };
 
-      const queryBuilderSpy = jest
+      const spy = jest
         .spyOn(repository, 'createQueryBuilder')
         .mockImplementation(() => queryBuilder);
 
-      const spy = jest
-        .spyOn(repository, 'findOne')
-        .mockResolvedValue(undefined);
-
-      expect(service.findOne(id)).resolves.toThrow(GoneException);
-      expect(spy).toHaveBeenCalled();
-      expect(queryBuilderSpy).toHaveBeenCalled();
+      expect(service.findOne(id)).resolves.toThrow(NotFoundException);
+      expect(spy).toHaveBeenCalledTimes(1);
     });
   });
 

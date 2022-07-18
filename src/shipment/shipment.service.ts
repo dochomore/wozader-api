@@ -68,7 +68,7 @@ export class ShipmentService {
     }
   }
 
-  async findOne(id: string): Promise<Shipment | BadRequestException> {
+  async findOne(id: string): Promise<Shipment | NotFoundException> {
     try {
       const result = await this.shipmentRepository
         .createQueryBuilder('shipment')
@@ -78,12 +78,12 @@ export class ShipmentService {
         .getOne();
 
       if (!result) {
-        throw new BadRequestException();
+        throw new NotFoundException();
       }
 
       return result;
     } catch (error) {
-      return new BadRequestException();
+      return new NotFoundException();
     }
   }
 
