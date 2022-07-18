@@ -24,21 +24,20 @@ export class ShipmentService {
       vehicleProductionYear,
       items,
     } = createShipmentDto;
-
-    const shipment = await this.shipmentRepository.create({
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      description: description,
-      maxLoadSize: maxLoadSize,
-      minLoadSize: minLoadSize,
-      vehicleModel: vehicleModel,
-      vehicleMaker: vehicleMaker,
-      vehicleProductionYear: vehicleProductionYear,
-      status: ShipmentStatus.OPEN,
-      items: items,
-    });
-
     try {
+      const shipment = await this.shipmentRepository.create({
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        description: description,
+        maxLoadSize: maxLoadSize,
+        minLoadSize: minLoadSize,
+        vehicleModel: vehicleModel,
+        vehicleMaker: vehicleMaker,
+        vehicleProductionYear: vehicleProductionYear,
+        status: ShipmentStatus.OPEN,
+        items: items,
+      });
+
       const result = await this.shipmentRepository.save(shipment);
       if (!result) {
         throw new BadRequestException();
