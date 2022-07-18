@@ -123,5 +123,14 @@ describe('ShipmentController', () => {
       expect(controller.remove(id)).resolves.toEqual(result);
       expect(spy).toHaveBeenCalledWith(id);
     });
+
+    it('should throw NotFoundException', async () => {
+      const id = 'id';
+      const spy = jest
+        .spyOn(service, 'remove')
+        .mockRejectedValue(new NotFoundException());
+      expect(controller.remove(id)).rejects.toThrow(NotFoundException);
+      expect(spy).toHaveBeenCalledWith(id);
+    });
   });
 });
