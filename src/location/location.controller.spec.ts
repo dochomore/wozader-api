@@ -1,6 +1,7 @@
 import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { UpdateResult } from 'typeorm';
 import { Location } from './entities/location.entity';
 import { LocationController } from './location.controller';
 import { LocationService } from './location.service';
@@ -49,6 +50,19 @@ describe('LocationController', () => {
       );
       expect(spy).toHaveBeenCalledWith(locationDto);
       expect(spy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('update', () => {
+    it('should update location', async () => {
+      const dto: any = {};
+      const id = 'id';
+      const result = { affected: 1 } as UpdateResult;
+
+      const spy = jest.spyOn(service, 'update').mockResolvedValue(result);
+
+      expect(controller.update(id, dto)).resolves.toEqual(result);
+      expect(spy).toHaveBeenCalledWith(id, dto);
     });
   });
 });
