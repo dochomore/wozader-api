@@ -127,6 +127,17 @@ describe('LocationController', () => {
 
       expect(controller.remove(id)).resolves.toEqual(removeResult);
       expect(spy).toHaveBeenCalledWith(id);
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+
+    it('shuld throw NotFoundException', async () => {
+      const id = 'id';
+      const spy = jest
+        .spyOn(service, 'remove')
+        .mockRejectedValue(new NotFoundException());
+
+      expect(controller.remove(id)).rejects.toThrow(NotFoundException);
+      expect(spy).toHaveBeenCalledWith(id);
     });
   });
 });
