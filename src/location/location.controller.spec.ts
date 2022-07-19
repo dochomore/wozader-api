@@ -78,4 +78,14 @@ describe('LocationController', () => {
       expect(spy).toHaveBeenCalledWith(id, dto);
     });
   });
+
+  describe('findAll', () => {
+    it('should return list of location', async () => {
+      const result = [];
+      const spy = jest.spyOn(service, 'findAll').mockResolvedValue(result);
+
+      expect(controller.findAll()).resolves.toEqual(result);
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+  });
 });
