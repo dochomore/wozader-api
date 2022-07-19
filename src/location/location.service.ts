@@ -58,12 +58,13 @@ export class LocationService {
     }
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<DeleteResult | NotFoundException> {
     try {
       const result: DeleteResult = await this.locationService.delete(id);
       if (result.affected === 0) {
         throw new NotFoundException();
       }
+      return result;
     } catch (err) {
       throw new NotFoundException(err.message);
     }
