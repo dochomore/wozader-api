@@ -30,7 +30,11 @@ export class LocationService {
 
   async findAll() {
     try {
-      return await this.locationService.find();
+      const result = await this.locationService.find();
+      if (!result) {
+        throw new BadRequestException();
+      }
+      return result;
     } catch (err) {
       return new BadRequestException();
     }

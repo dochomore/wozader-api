@@ -76,5 +76,13 @@ describe('LocationService', () => {
       expect(spy).toHaveBeenCalled();
       expect(spy).toHaveBeenCalledTimes(1);
     });
+
+    it('should throw BadRequestException', async () => {
+      const spy = jest.spyOn(repository, 'find').mockResolvedValue(undefined);
+
+      expect(service.findAll()).resolves.toThrow(BadRequestException);
+      expect(spy).toHaveBeenCalled();
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
   });
 });
