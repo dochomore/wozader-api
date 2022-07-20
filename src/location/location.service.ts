@@ -18,7 +18,11 @@ export class LocationService {
   async create(createLocationDto: CreateLocationDto) {
     const location = this.locationService.create({ ...createLocationDto });
     try {
-      return await this.locationService.save(location);
+      const result = await this.locationService.save(location);
+      if (!result) {
+        throw new BadRequestException();
+      }
+      return result;
     } catch (err) {
       throw new BadRequestException();
     }

@@ -1,5 +1,7 @@
+import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { NotFoundError } from 'rxjs';
 import { Repository } from 'typeorm';
 import { Location } from './entities/location.entity';
 import { LocationService } from './location.service';
@@ -45,6 +47,23 @@ describe('LocationService', () => {
       expect(createSpy).toHaveBeenCalledWith(dto);
       expect(saveSpy).toHaveBeenCalledWith(location);
       expect(saveSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should throw BadRequestException', async () => {
+      const location: any = {};
+      const dto: any = {};
+
+      const createSpy = jest
+        .spyOn(repository, 'create')
+        .mockImplementation(() => location);
+
+      const saveSpy = jest
+        .spyOn(repository, 'save')
+        .mockRejectedValue(undefined);
+
+      expect(service.create(dto)).rejects.toThrow(BadRequestException);
+      expect(createSpy).toHaveBeenCalledWith(dto);
+      expect(saveSpy).toHaveBeenCalled();
     });
   });
 });
