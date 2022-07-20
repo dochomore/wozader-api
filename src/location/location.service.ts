@@ -48,7 +48,7 @@ export class LocationService {
       }
       return result;
     } catch (err) {
-      throw new NotFoundException();
+      return new NotFoundException();
     }
   }
 

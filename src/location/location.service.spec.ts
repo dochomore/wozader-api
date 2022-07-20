@@ -1,4 +1,4 @@
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -96,6 +96,16 @@ describe('LocationService', () => {
         .mockResolvedValue(location);
 
       expect(service.findOne(id)).resolves.toEqual(location);
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should throw NotFoundException', async () => {
+      const id = 'id';
+      const spy = jest
+        .spyOn(repository, 'findOneBy')
+        .mockResolvedValue(undefined);
+
+      expect(service.findOne(id)).resolves.toThrow(NotFoundException);
       expect(spy).toHaveBeenCalledTimes(1);
     });
   });
