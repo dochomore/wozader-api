@@ -1,7 +1,7 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { Location } from './entities/location.entity';
 import { LocationService } from './location.service';
 
@@ -11,6 +11,7 @@ const mockRepository = () => ({
   find: jest.fn(),
   findOneBy: jest.fn(),
   update: jest.fn(),
+  delete: jest.fn(),
 });
 
 describe('LocationService', () => {
@@ -136,6 +137,20 @@ describe('LocationService', () => {
 
       expect(service.update(id, dto)).rejects.toThrow(NotFoundException);
       expect(spy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('remove', () => {
+    it('should remove location', async () => {
+      const removeResult = { affected: 1 } as DeleteResult;
+      const id = 'id';
+
+      const spy = jest
+        .spyOn(repository, 'delete')
+        .mockResolvedValue(removeResult);
+
+      expect(service.remove(id)).resolves.toEqual(removeResult);
+      expect(spy).toHaveBeenCalledWith(id);
     });
   });
 });
