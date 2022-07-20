@@ -9,6 +9,7 @@ const mockRepository = () => ({
   create: jest.fn(),
   save: jest.fn(),
   find: jest.fn(),
+  findOneBy: jest.fn(),
 });
 
 describe('LocationService', () => {
@@ -82,6 +83,19 @@ describe('LocationService', () => {
 
       expect(service.findAll()).resolves.toThrow(BadRequestException);
       expect(spy).toHaveBeenCalled();
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('findOne', () => {
+    it('should return location', async () => {
+      const location: any = {};
+      const id = 'id';
+      const spy = jest
+        .spyOn(repository, 'findOneBy')
+        .mockResolvedValue(location);
+
+      expect(service.findOne(id)).resolves.toEqual(location);
       expect(spy).toHaveBeenCalledTimes(1);
     });
   });
