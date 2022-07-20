@@ -4,7 +4,10 @@ import { Repository } from 'typeorm';
 import { Location } from './entities/location.entity';
 import { LocationService } from './location.service';
 
-const mockRepository = () => ({});
+const mockRepository = () => ({
+  create: jest.fn(),
+  save: jest.fn(),
+});
 
 describe('LocationService', () => {
   let service: LocationService;
@@ -24,5 +27,24 @@ describe('LocationService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  describe('create', () => {
+    it('should create new location', async () => {
+      const location: any = {};
+      const dto: any = {};
+
+      const createSpy = jest
+        .spyOn(repository, 'create')
+        .mockImplementation(() => location);
+      const saveSpy = jest
+        .spyOn(repository, 'save')
+        .mockResolvedValue(location);
+
+      expect(service.create(dto)).resolves.toEqual(location);
+      expect(createSpy).toHaveBeenCalledWith(dto);
+      expect(saveSpy).toHaveBeenCalledWith(location);
+      expect(saveSpy).toHaveBeenCalledTimes(1);
+    });
   });
 });
