@@ -152,5 +152,16 @@ describe('LocationService', () => {
       expect(service.remove(id)).resolves.toEqual(removeResult);
       expect(spy).toHaveBeenCalledWith(id);
     });
+    it('should throw NotFoundException', async () => {
+      const removeResult = { affected: 0 } as DeleteResult;
+      const id = 'id';
+
+      const spy = jest
+        .spyOn(repository, 'delete')
+        .mockResolvedValue(removeResult);
+
+      expect(service.remove(id)).resolves.toThrow(NotFoundException);
+      expect(spy).toHaveBeenCalledWith(id);
+    });
   });
 });
