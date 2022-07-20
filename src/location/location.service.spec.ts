@@ -1,7 +1,7 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { Location } from './entities/location.entity';
 import { LocationService } from './location.service';
 
@@ -10,6 +10,7 @@ const mockRepository = () => ({
   save: jest.fn(),
   find: jest.fn(),
   findOneBy: jest.fn(),
+  update: jest.fn(),
 });
 
 describe('LocationService', () => {
@@ -106,6 +107,21 @@ describe('LocationService', () => {
         .mockResolvedValue(undefined);
 
       expect(service.findOne(id)).resolves.toThrow(NotFoundException);
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('update', () => {
+    it('should update location', async () => {
+      const updateResult = { affected: 1 } as UpdateResult;
+      const id = 'id';
+      const dto = {};
+
+      const spy = jest
+        .spyOn(repository, 'update')
+        .mockResolvedValue(updateResult);
+
+      expect(service.update(id, dto)).resolves.toEqual(updateResult);
       expect(spy).toHaveBeenCalledTimes(1);
     });
   });
