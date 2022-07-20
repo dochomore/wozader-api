@@ -124,5 +124,18 @@ describe('LocationService', () => {
       expect(service.update(id, dto)).resolves.toEqual(updateResult);
       expect(spy).toHaveBeenCalledTimes(1);
     });
+
+    it('should throw NotFoundException', async () => {
+      const updateResult = { affected: 0 } as UpdateResult;
+      const id = 'id';
+      const dto = {};
+
+      const spy = jest
+        .spyOn(repository, 'update')
+        .mockResolvedValue(updateResult);
+
+      expect(service.update(id, dto)).rejects.toThrow(NotFoundException);
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
   });
 });
