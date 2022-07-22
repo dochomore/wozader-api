@@ -9,6 +9,7 @@ import { ShipmentModule } from './shipment/shipment.module';
 import { LocationModule } from './location/location.module';
 import { Location } from './location/entities/location.entity';
 import { UserModule } from './user/user.module';
+import { User } from './user/entities/user.entity';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { UserModule } from './user/user.module';
       username: process.env.DATABASE_USER,
       database: process.env.DATABASE_NAME,
       password: process.env.DATABASE_PASSWORD,
-      entities: [Shipment, Item, Location],
+      entities: [Shipment, Item, Location, User],
       synchronize: true, // do not do this on production
     }),
     ShipmentModule,
