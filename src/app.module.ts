@@ -10,6 +10,7 @@ import { LocationModule } from './location/location.module';
 import { Location } from './location/entities/location.entity';
 import { UserModule } from './user/user.module';
 import { User } from './user/entities/user.entity';
+import { AuthenticationModule } from './authentication/authentication.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { User } from './user/entities/user.entity';
     ShipmentModule,
     LocationModule,
     UserModule,
+    AuthenticationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
