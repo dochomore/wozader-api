@@ -26,7 +26,7 @@ export class UserService {
       }
       return result;
     } catch (error) {
-      return new BadRequestException();
+      return new BadRequestException(error.message);
     }
   }
 

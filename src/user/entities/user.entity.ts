@@ -10,7 +10,7 @@ export class User {
   @IsDefined()
   username: string;
 
-  @Column({ unique: true })
+  @Column()
   @IsDefined()
   @MinLength(8)
   password: string;
