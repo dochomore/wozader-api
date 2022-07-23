@@ -53,6 +53,19 @@ export class UserService {
       return new NotFoundException();
     }
   }
+  async findOneByUsername(username: string): Promise<User | NotFoundException> {
+    try {
+      const result = await this.userRepository.findOneBy({
+        username: username,
+      });
+      if (!result) {
+        throw new NotFoundException();
+      }
+      return result;
+    } catch (error) {
+      return new NotFoundException();
+    }
+  }
 
   async update(
     id: string,
