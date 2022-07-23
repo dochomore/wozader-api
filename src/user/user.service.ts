@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -72,7 +72,15 @@ export class UserService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number): Promise<DeleteResult | NotFoundException> {
+    try {
+      const deleteResult = await this.userRepository.delete(id);
+      if (deleteResult.affected === 0) {
+        throw new NotFoundException();
+      }
+      return deleteResult;
+    } catch (error) {
+      return new NotFoundException();
+    }
   }
 }
