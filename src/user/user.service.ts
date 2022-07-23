@@ -20,13 +20,22 @@ export class UserService {
       if (!result) {
         throw new BadRequestException();
       }
+      return result;
     } catch (error) {
       return new BadRequestException();
     }
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async findAll() {
+    try {
+      const result = await this.userRepository.find();
+      if (!result) {
+        throw new BadRequestException();
+      }
+      return result;
+    } catch (error) {
+      return new BadRequestException();
+    }
   }
 
   findOne(id: number) {
