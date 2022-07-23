@@ -55,7 +55,7 @@ export class UserService {
   }
 
   async update(
-    id: number,
+    id: string,
     updateUserDto: UpdateUserDto,
   ): Promise<UpdateResult | NotFoundException> {
     try {
@@ -72,7 +72,7 @@ export class UserService {
     }
   }
 
-  async remove(id: number): Promise<DeleteResult | NotFoundException> {
+  async remove(id: string): Promise<DeleteResult | NotFoundException> {
     try {
       const deleteResult = await this.userRepository.delete(id);
       if (deleteResult.affected === 0) {
