@@ -14,9 +14,7 @@ export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
-  async create(
-    createUserDto: CreateUserDto,
-  ): Promise<User | BadRequestException> {
+  async create(createUserDto: CreateUserDto) {
     try {
       const user = await this.userRepository.create({ ...createUserDto });
 
@@ -24,21 +22,23 @@ export class UserService {
       if (!result) {
         throw new BadRequestException();
       }
-      return result;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password, ...otherAttrs } = result;
+      return otherAttrs;
     } catch (error) {
-      return new BadRequestException(error.message);
+      return new BadRequestException();
     }
   }
 
-  async findAll(): Promise<User[] | BadRequestException> {
+  async findAll(): Promise<User[] | NotFoundException> {
     try {
       const result = await this.userRepository.find();
       if (!result) {
-        throw new BadRequestException();
+        throw new NotFoundException();
       }
       return result;
     } catch (error) {
-      return new BadRequestException();
+      return new NotFoundException();
     }
   }
 
