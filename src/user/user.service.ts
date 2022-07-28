@@ -8,15 +8,26 @@ import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
+
+  async encrytp(value: string) {
+    const salt = bcrypt.genSaltSync();
+    return bcrypt.hash(value, salt);
+  }
+
   async create(createUserDto: CreateUserDto) {
     try {
-      const user = await this.userRepository.create({ ...createUserDto });
+      const hashedValue = await this.encrytp(createUserDto.password);
+      const user = await this.userRepository.create({
+        ...createUserDto,
+        password: hashedValue,
+      });
 
       const result = await this.userRepository.save(user);
       if (!result) {
