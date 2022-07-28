@@ -1,5 +1,9 @@
-import { IsDefined, MinLength } from 'class-validator';
+import { IsDefined } from 'class-validator';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+
+/**
+ * Wozader User
+ */
 
 @Entity()
 export class User {
@@ -12,6 +16,24 @@ export class User {
 
   @Column()
   @IsDefined()
-  @MinLength(8)
+  firstName: string;
+
+  @Column()
+  @IsDefined()
+  fatherName: string;
+
+  @Column()
+  @IsDefined()
+  createdAt: string;
+
+  @Column()
+  @IsDefined()
+  updatedAt: string;
+
+  @Column()
+  @IsDefined()
   password: string;
+
+  @Column({ nullable: true })
+  imageUrl: string;
 }
