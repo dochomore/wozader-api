@@ -33,6 +33,7 @@ export class UserService {
       if (!result) {
         throw new BadRequestException();
       }
+
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...otherAttrs } = result;
       return otherAttrs;
@@ -41,13 +42,20 @@ export class UserService {
     }
   }
 
-  async findAll(): Promise<User[] | NotFoundException> {
+  async findAll() {
     try {
       const result = await this.userRepository.find();
       if (!result) {
         throw new NotFoundException();
       }
-      return result;
+
+      const values = result.map((user) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password, ...others } = user;
+        return others;
+      });
+
+      return values;
     } catch (error) {
       return new NotFoundException();
     }
