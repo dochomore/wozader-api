@@ -1,4 +1,3 @@
-import { IsDefined } from 'class-validator';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 /**
@@ -11,27 +10,21 @@ export class User {
   userId: string;
 
   @Column({ unique: true })
-  @IsDefined()
   username: string;
 
   @Column()
-  @IsDefined()
   firstName: string;
 
   @Column()
-  @IsDefined()
   fatherName: string;
 
   @Column()
-  @IsDefined()
   createdAt: string;
 
   @Column()
-  @IsDefined()
   updatedAt: string;
 
   @Column()
-  @IsDefined()
   password: string;
 
   @Column({ nullable: true })
