@@ -12,18 +12,32 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
+  async updateRefreshToken(userId: string, hashedToken: string) {
+    try {
+      const updateResult: UpdateResult = await this.userRepository.update(
+        userId,
+        { refreshToken: hashedToken },
+      );
+      if (updateResult.affected === 0) {
+        throw new NotFoundException();
+      }
+      return updateResult;
+    } catch (error) {
+      return new NotFoundException();
+    }
+  }
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  async encrytp(value: string) {
+  async encrypt(value: string) {
     const salt = bcrypt.genSaltSync();
-    return bcrypt.hash(value, salt);
+    return bcrypt.hashSync(value, salt);
   }
 
   async create(createUserDto: CreateUserDto) {
     try {
-      const hashedValue = await this.encrytp(createUserDto.password);
+      const hashedValue = await this.encrypt(createUserDto.password);
       const user = await this.userRepository.create({
         ...createUserDto,
         password: hashedValue,

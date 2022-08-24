@@ -3,18 +3,18 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { Item } from './shipment/item/entities/item.entity';
-import { Shipment } from './shipment/entities/shipment.entity';
-import { ShipmentModule } from './shipment/shipment.module';
-import { LocationModule } from './location/location.module';
-import { Location } from './location/entities/location.entity';
-import { UserModule } from './user/user.module';
-import { User } from './user/entities/user.entity';
 import { AuthenticationModule } from './authentication/authentication.module';
+import { Location } from './location/entities/location.entity';
+import { LocationModule } from './location/location.module';
+import { Shipment } from './shipment/entities/shipment.entity';
+import { Item } from './shipment/item/entities/item.entity';
+import { ShipmentModule } from './shipment/shipment.module';
+import { User } from './user/entities/user.entity';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DATABASE_HOST,
